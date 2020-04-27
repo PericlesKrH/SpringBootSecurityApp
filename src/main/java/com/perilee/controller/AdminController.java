@@ -6,6 +6,7 @@
 package com.perilee.controller;
 
 import com.perilee.entities.MyUser;
+import com.perilee.entities.Role;
 import java.util.ArrayList;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,7 +60,7 @@ public class AdminController {
         System.out.println(myuser.getPassword());
         System.out.println(myuser.getRoles());
         List<GrantedAuthority> authorities = new ArrayList();
-        for (String role : myuser.getRoles()) {
+        for (Role role : myuser.getRoles()) {
             String temp = "ROLE_" + role;
             authorities.add(new SimpleGrantedAuthority(temp));
         }

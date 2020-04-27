@@ -5,18 +5,39 @@
  */
 package com.perilee.entities;
 
+import java.io.Serializable;
 import java.util.List;
 import java.util.Objects;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 
 /**
  *
  * @author perry
  */
-public class MyUser {
-    
+@Entity
+public class MyUser implements Serializable {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer uid;
     private String username;
     private String password;
-    private List<String> roles;
+    private String fname;
+    private String lname;
+    private String email;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinTable(name = "user_role", //name of the table
+            joinColumns = @JoinColumn(name = "uid"),  // column in user_role table
+            inverseJoinColumns = @JoinColumn(name = "rid"))  // column in user_role table    
+    private List<Role> roles;
 
     public MyUser() {
     }
@@ -37,11 +58,11 @@ public class MyUser {
         this.password = password;
     }
 
-    public List<String> getRoles() {
+    public List<Role> getRoles() {
         return roles;
     }
 
-    public void setRoles(List<String> roles) {
+    public void setRoles(List<Role> roles) {
         this.roles = roles;
     }
 
@@ -77,7 +98,37 @@ public class MyUser {
         }
         return true;
     }
-    
-    
-    
+
+    public Integer getUid() {
+        return uid;
+    }
+
+    public void setUid(Integer uid) {
+        this.uid = uid;
+    }
+
+    public String getFname() {
+        return fname;
+    }
+
+    public void setFname(String fname) {
+        this.fname = fname;
+    }
+
+    public String getLname() {
+        return lname;
+    }
+
+    public void setLname(String lname) {
+        this.lname = lname;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
 }

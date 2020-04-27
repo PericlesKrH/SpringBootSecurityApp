@@ -7,11 +7,11 @@ package com.perilee.controller;
 
 import com.perilee.entities.MyUser;
 import com.perilee.entities.Role;
+import com.perilee.repositories.UserRepository;
 import com.perilee.service.MyUserService;
 import com.perilee.service.RoleService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,15 +26,17 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-    
+
 //    @Autowired
 //    private JdbcUserDetailsManager jdbcUserDetailsManager;
-    
+    @Autowired
+    private UserRepository userRepo;
+
     @Autowired
     private MyUserService userService;
-    
+
     @Autowired
-    private RoleService roleService;    
+    private RoleService roleService;
 
     @GetMapping("/home")
     public String adminHome() {
@@ -47,15 +49,20 @@ public class AdminController {
         model.addAttribute("myuser", new MyUser());
         return "register-form";
     }
-    
+
     @ModelAttribute("roles")
-    public List<Role> getListOfRoles(){
-    return roleService.getAllRole();
+    public List<Role> getListOfRoles() {
+        return roleService.getAllRole();
     }
 
     @PostMapping("/registerUser")
-    public String registerMyUser(@ModelAttribute("myuser") MyUser myuser) {       
-        userService.saveUser(myuser);        
+    public String registerMyUser(@ModelAttribute("myuser") MyUser myuser, Model m) {
+        MyUser existingUser = userRepo.findByUsername(myuser.getUsername());
+        if (existingUser != null) {
+            m.addAttribute("userExistError", "Username already exists");
+            return "forward:admin/register";
+        }
+        userService.saveUser(myuser);
         return "redirect:/admin/home";
     }
 

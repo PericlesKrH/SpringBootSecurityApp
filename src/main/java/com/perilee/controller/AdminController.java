@@ -34,10 +34,7 @@ public class AdminController {
     private MyUserService userService;
     
     @Autowired
-    private RoleService roleService;
-    
-    
-    
+    private RoleService roleService;    
 
     @GetMapping("/home")
     public String adminHome() {
@@ -47,11 +44,6 @@ public class AdminController {
     @GetMapping("/register")
 //    @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String registerForm(Model model) {
-//        List<String> roles = new ArrayList();
-//        roles.add("ADMIN");
-//        roles.add("USER");
-//        roles.add("TEACHER");
-//        model.addAttribute("roles", roles);
         model.addAttribute("myuser", new MyUser());
         return "register-form";
     }
@@ -62,14 +54,8 @@ public class AdminController {
     }
 
     @PostMapping("/registerUser")
-    public String registerMyUser(@ModelAttribute("myuser") MyUser myuser) {
-        System.out.println(myuser.getUsername());
-        System.out.println(myuser.getPassword());
-        System.out.println(myuser.getRoles());
-        userService.saveUser(myuser);
-        
-        
-        
+    public String registerMyUser(@ModelAttribute("myuser") MyUser myuser) {       
+        userService.saveUser(myuser);        
         return "redirect:/admin/home";
     }
 

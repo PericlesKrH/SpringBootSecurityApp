@@ -36,7 +36,6 @@ public class MyUserServiceImpl implements MyUserService{
     
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-
         MyUser myuser = userRepo.findByUsername(username);
         if(myuser == null){
         throw new UsernameNotFoundException("Invalid Username");

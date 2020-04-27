@@ -16,6 +16,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,6 +30,9 @@ public class MyUserServiceImpl implements MyUserService{
 
     @Autowired
     private UserRepository userRepo;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;    
     
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
@@ -54,6 +58,8 @@ public class MyUserServiceImpl implements MyUserService{
 
     @Override
     public void saveUser(MyUser myuser) {
+        String encodedPassword = passwordEncoder.encode(myuser.getPassword());
+        myuser.setPassword(encodedPassword);
         userRepo.save(myuser);
     }
 }

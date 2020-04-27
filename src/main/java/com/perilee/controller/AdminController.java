@@ -36,8 +36,7 @@ public class AdminController {
     @Autowired
     private RoleService roleService;
     
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    
     
 
     @GetMapping("/home")
@@ -68,7 +67,7 @@ public class AdminController {
         System.out.println(myuser.getPassword());
         System.out.println(myuser.getRoles());
         userService.saveUser(myuser);
-        String encodedPassword = passwordEncoder.encode(myuser.getPassword());
+        
         
         
         return "redirect:/admin/home";

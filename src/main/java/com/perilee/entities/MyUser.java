@@ -17,12 +17,14 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 
 /**
  *
  * @author perry
  */
 @Entity
+@Table(name = "myuser")
 public class MyUser implements Serializable {
 
     @Id
@@ -66,39 +68,6 @@ public class MyUser implements Serializable {
         this.roles = roles;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 89 * hash + Objects.hashCode(this.username);
-        hash = 89 * hash + Objects.hashCode(this.password);
-        hash = 89 * hash + Objects.hashCode(this.roles);
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final MyUser other = (MyUser) obj;
-        if (!Objects.equals(this.username, other.username)) {
-            return false;
-        }
-        if (!Objects.equals(this.password, other.password)) {
-            return false;
-        }
-        if (!Objects.equals(this.roles, other.roles)) {
-            return false;
-        }
-        return true;
-    }
-
     public Integer getUid() {
         return uid;
     }
@@ -131,4 +100,50 @@ public class MyUser implements Serializable {
         this.email = email;
     }
 
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 73 * hash + Objects.hashCode(this.uid);
+        hash = 73 * hash + Objects.hashCode(this.username);
+        hash = 73 * hash + Objects.hashCode(this.password);
+        hash = 73 * hash + Objects.hashCode(this.fname);
+        hash = 73 * hash + Objects.hashCode(this.lname);
+        hash = 73 * hash + Objects.hashCode(this.email);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final MyUser other = (MyUser) obj;
+        if (!Objects.equals(this.username, other.username)) {
+            return false;
+        }
+        if (!Objects.equals(this.password, other.password)) {
+            return false;
+        }
+        if (!Objects.equals(this.fname, other.fname)) {
+            return false;
+        }
+        if (!Objects.equals(this.lname, other.lname)) {
+            return false;
+        }
+        if (!Objects.equals(this.email, other.email)) {
+            return false;
+        }
+        if (!Objects.equals(this.uid, other.uid)) {
+            return false;
+        }
+        return true;
+    }
+
+    
 }

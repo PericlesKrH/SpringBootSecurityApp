@@ -22,17 +22,24 @@
         <form action="${pageContext.request.contextPath}/admin/registerUser" method="POST" modelAttribute="myuser">
             <form:form action="${pageContext.request.contextPath}/admin/registerUser" method="POST" modelAttribute="myuser">
                 <p>
-                    <label>Enter a username</label>
-                    <form:input path="username"/>
+                    <form:input path="username" placeholder="Username"/>
                 </p>
                 <p>
-                    <label>Enter a password</label>
-                    <form:input path="password"/>
+                    <form:input path="password" placeholder="Password"/>
+                </p>
+                <p>
+                    <form:input path="fname" placeholder="First name"/>
+                </p>
+                <p>
+                    <form:input path="lname" placeholder="Last name"/>
+                </p>
+                <p>
+                    <form:input path="email" placeholder="Email"/>
                 </p>
                 <p>
                     <label>Enter a role</label>
-                    <form:select multiple="true" path="roles">
-                        <form:options items="${roles}" />
+                    <form:select multiple="true" path="roles" itemValue="rid" itemLabel="rname">
+                        <form:options items="${roles}" itemLabel="rname" itemValue="rid"/>
                     </form:select>
                 </p>
                 <input type="submit" value="Register">                

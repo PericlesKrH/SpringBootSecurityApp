@@ -5,9 +5,11 @@
  */
 package com.perilee;
 
+import com.perilee.service.MyUserService;
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -23,6 +25,9 @@ import org.springframework.security.provisioning.JdbcUserDetailsManager;
 @EnableWebSecurity
 public class MyWebSecurityConfigurer extends WebSecurityConfigurerAdapter{
 
+    @Autowired
+    private MyUserService userService;
+    
     @Autowired
     private DataSource dataSource;
     
@@ -59,20 +64,26 @@ public class MyWebSecurityConfigurer extends WebSecurityConfigurerAdapter{
 //                .and()
 //                .withUser("teacher").password("{noop}12345").roles("TEACHER");
 //---------Gia na paizo me vasi-------------
-            auth.jdbcAuthentication()
-                    .dataSource(dataSource)
-                   
+//            auth.jdbcAuthentication().dataSource(dataSource).passwordEncoder(passwordEncoder());
+                   auth.authenticationProvider(authenticationProvider());
                     //paizei me HSQL vasi
 //                    .withDefaultSchema() //dn paizei me mySQL giati dn uparxei varchar_ignorecase timi pou prospathei na ftiaksei to spring
                     ;
     }
     
-    @Bean
-    public JdbcUserDetailsManager jdbsUserDetailsManager(){
-        JdbcUserDetailsManager manager = new JdbcUserDetailsManager();
-        manager.setDataSource(dataSource);
-        return manager;
+    public DaoAuthenticationProvider authenticationProvider(){
+    DaoAuthenticationProvider auth = new DaoAuthenticationProvider();
+    auth.setUserDetailsService(userService);
+    auth.setPasswordEncoder(passwordEncoder());
+    return auth;
     }
+    
+//    @Bean
+//    public JdbcUserDetailsManager jdbsUserDetailsManager(){
+//        JdbcUserDetailsManager manager = new JdbcUserDetailsManager();
+//        manager.setDataSource(dataSource);
+//        return manager;
+//    }
     
     @Bean
     public PasswordEncoder passwordEncoder(){

@@ -7,14 +7,11 @@ package com.perilee.controller;
 
 import com.perilee.entities.MyUser;
 import com.perilee.entities.Role;
-import java.util.ArrayList;
+import com.perilee.service.MyUserService;
+import com.perilee.service.RoleService;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.provisioning.JdbcUserDetailsManager;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,8 +27,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/admin")
 public class AdminController {
     
+//    @Autowired
+//    private JdbcUserDetailsManager jdbcUserDetailsManager;
+    
     @Autowired
-    private JdbcUserDetailsManager jdbcUserDetailsManager;
+    private MyUserService userService;
+    
+    @Autowired
+    private RoleService roleService;
     
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -45,13 +48,18 @@ public class AdminController {
     @GetMapping("/register")
 //    @RequestMapping(value = "/register", method = RequestMethod.GET)
     public String registerForm(Model model) {
-        List<String> roles = new ArrayList();
-        roles.add("ADMIN");
-        roles.add("USER");
-        roles.add("TEACHER");
-        model.addAttribute("roles", roles);
+//        List<String> roles = new ArrayList();
+//        roles.add("ADMIN");
+//        roles.add("USER");
+//        roles.add("TEACHER");
+//        model.addAttribute("roles", roles);
         model.addAttribute("myuser", new MyUser());
         return "register-form";
+    }
+    
+    @ModelAttribute("roles")
+    public List<Role> getListOfRoles(){
+    return roleService.getAllRole();
     }
 
     @PostMapping("/registerUser")
@@ -59,14 +67,10 @@ public class AdminController {
         System.out.println(myuser.getUsername());
         System.out.println(myuser.getPassword());
         System.out.println(myuser.getRoles());
-        List<GrantedAuthority> authorities = new ArrayList();
-        for (Role role : myuser.getRoles()) {
-            String temp = "ROLE_" + role;
-            authorities.add(new SimpleGrantedAuthority(temp));
-        }
+        userService.saveUser(myuser);
         String encodedPassword = passwordEncoder.encode(myuser.getPassword());
-        User user = new User(myuser.getUsername(), encodedPassword, authorities);
-        jdbcUserDetailsManager.createUser(user);
+        
+        
         return "redirect:/admin/home";
     }
 

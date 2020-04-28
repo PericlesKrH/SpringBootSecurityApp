@@ -7,6 +7,7 @@ package com.perilee.service;
 
 import com.perilee.entities.MyUser;
 import com.perilee.entities.Role;
+import com.perilee.repositories.RoleRepository;
 import com.perilee.repositories.UserRepository;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,31 +27,33 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
-public class MyUserServiceImpl implements MyUserService{
+public class MyUserServiceImpl implements MyUserService {
 
     @Autowired
     private UserRepository userRepo;
+    
+    @Autowired
+    private RoleRepository roleRepo;
 
     @Autowired
-    private PasswordEncoder passwordEncoder;    
-    
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         MyUser myuser = userRepo.findByUsername(username);
-        if(myuser == null){
-        throw new UsernameNotFoundException("Invalid Username");
+        if (myuser == null) {
+            throw new UsernameNotFoundException("Invalid Username");
         }
-        User securityUser = new User(myuser.getUsername(),myuser.getPassword(),mapRolesToAuthorities(myuser.getRoles()));
+        User securityUser = new User(myuser.getUsername(), myuser.getPassword(), mapRolesToAuthorities(myuser.getRoles()));
         return securityUser;
     }
-    
-    
+
     //helper method to tranform Role to Authorities
-    private List<GrantedAuthority> mapRolesToAuthorities(List<Role> roles){
+    private List<GrantedAuthority> mapRolesToAuthorities(List<Role> roles) {
         List<GrantedAuthority> authorities = new ArrayList();
-        for(Role r : roles){
-        GrantedAuthority authority = new SimpleGrantedAuthority(r.getRname()); 
-           authorities.add(authority);        
+        for (Role r : roles) {
+            GrantedAuthority authority = new SimpleGrantedAuthority(r.getRname());
+            authorities.add(authority);
         }
         return authorities;
     }
@@ -59,12 +62,23 @@ public class MyUserServiceImpl implements MyUserService{
     public void saveUser(MyUser myuser) {
         String encodedPassword = passwordEncoder.encode(myuser.getPassword());
         myuser.setPassword(encodedPassword);
+        List<Role> roles = myuser.getRoles();
+        boolean roleUserExists = false;
+        for (Role r : roles) {
+            if (r.getRname().equals("ROLE_USER")) {
+                roleUserExists = true;
+                break;
+            }
+        }
+        if(roleUserExists == false){
+            roles.add(roleRepo.findRoleByName("ROLE_USER"));
+        }
         userRepo.save(myuser);
     }
 
     @Override
     public MyUser findByUsername(String username) {
-       MyUser user = userRepo.findByUsername(username);
-       return user;
+        MyUser user = userRepo.findByUsername(username);
+        return user;
     }
 }

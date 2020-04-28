@@ -18,6 +18,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
 
 /**
  *
@@ -30,10 +32,16 @@ public class MyUser implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer uid;
+    @NotEmpty(message = "Username is required!")
     private String username;
+    @NotEmpty(message = "Password is required!")
     private String password;
+    @NotEmpty(message = "First name is required!")
     private String fname;
+    @NotEmpty(message = "Last name is required!")
     private String lname;
+    @Email(message = "Email is not valid!")
+    @NotEmpty(message = "Email is required!")
     private String email;
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "user_role", //name of the table

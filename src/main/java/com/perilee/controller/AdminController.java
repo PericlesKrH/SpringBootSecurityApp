@@ -7,13 +7,14 @@ package com.perilee.controller;
 
 import com.perilee.entities.MyUser;
 import com.perilee.entities.Role;
-import com.perilee.repositories.UserRepository;
 import com.perilee.service.MyUserService;
 import com.perilee.service.RoleService;
 import java.util.List;
+import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -29,9 +30,7 @@ public class AdminController {
 
 //    @Autowired
 //    private JdbcUserDetailsManager jdbcUserDetailsManager;
-    @Autowired
-    private UserRepository userRepo;
-
+    
     @Autowired
     private MyUserService userService;
 
@@ -55,12 +54,17 @@ public class AdminController {
         return roleService.getAllRole();
     }
 
-    @PostMapping("/registerUser")
-    public String registerMyUser(@ModelAttribute("myuser") MyUser myuser, Model m) {
-        MyUser existingUser = userRepo.findByUsername(myuser.getUsername());
+    @PostMapping("/registerUser")   //BindingResult must be after validate
+    public String registerMyUser(@Valid @ModelAttribute("myuser") MyUser myuser, BindingResult result, Model m) {
+        if(result.hasErrors()){
+            
+        return "register-form";
+        }
+        MyUser existingUser = userService.findByUsername(myuser.getUsername());
         if (existingUser != null) {
             m.addAttribute("userExistError", "Username already exists");
-            return "forward:admin/register";
+            m.addAttribute("myuser", new MyUser());
+            return "register-form";
         }
         userService.saveUser(myuser);
         return "redirect:/admin/home";

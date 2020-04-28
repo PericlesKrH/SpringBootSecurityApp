@@ -61,4 +61,10 @@ public class MyUserServiceImpl implements MyUserService{
         myuser.setPassword(encodedPassword);
         userRepo.save(myuser);
     }
+
+    @Override
+    public MyUser findByUsername(String username) {
+       MyUser user = userRepo.findByUsername(username);
+       return user;
+    }
 }
